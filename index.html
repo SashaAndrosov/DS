@@ -1,0 +1,114 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <script src="script.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+</head>
+
+<body>
+  <style>
+    .chous {
+      width: 180px;
+      height: 50px;
+      border-radius: 4px;
+      text-align: center;
+      margin: 25px;
+      cursor: pointer;
+      display: block;
+      font: 14px/50px Tahoma;
+      transition: all 0.18s ease-in-out;
+      border: 1px solid #4FD666;
+      background: linear-gradient(to top right, #3EC97A, #69EA49 20%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, 0)) top right/500% 500%;
+      color: #4FD666;
+    }
+
+    .chous:hover {
+      color: white;
+      background-position: bottom left;
+    }
+
+    .my {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+  </style>
+
+  <div class="dada">
+    <label for="myfile" class="chous">Выберите файл</label>
+    <input type="file" class="my" id="myfile" name="myfile"
+onchange="getExif()"
+accept=".jpg, .jpeg, .png , .tif , .bmp, .gif, .pcx"  multiple="multiple"/>
+    <div>Имя файла: <span id="Name"></span></div>
+    <div>Размер файла: <span id="Size file"></span> </div>
+    <div>Размер изображения(в пикселях): <span id="Size pixel"></span> </div>
+    <div>Тип: <span id="Type"></span> </div>
+    <div>Разрешение: <span id="Permission"></span>(dot/inch) </div>
+    <div>Глубина цвета: <span id="Depth"></span> </div>
+    <div>Тип сжатия: <span id="Compression"></span> </div>
+    <script type="text/javascript" src="script.js"></script>
+    <script>
+      window.onload = function() {
+  var photo_input = document.getElementById('myfile');
+    
+  photo_input.onchange = function() {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.createElement('img');
+      img.onload = function() {
+        console.log(this.width+'x'+this.height); // наконец-то 
+       document.getElementById("Size pixel").innerHTML=this.width+'x'+this.height;
+      }
+      img.src = e.target.result;
+      
+    }
+    reader.readAsDataURL(this.files[0])
+    document.getElementById("Name").innerHTML =photo_input.files.item(0).name;
+    document.getElementById("Size file").innerHTML =Math.round(photo_input.files.item(0).size/1024)+" КБ";
+document.getElementById("Type").innerHTML =
+photo_input.files.item(0).type.slice(6);
+var file=photo_input.files.item(0).name;
+file=file.replace('+','');
+alert(file);
+const pixelSizesRegex = /\d+х\d+х\d+/;
+
+ const pixelSizesStr = file.match(pixelSizesRegex)[0];
+ console.log(pixelSizesStr);
+      const pixelSizes = pixelSizesStr.split('х');
+
+      const pixelSize = pixelSizes[0] + 'х' + pixelSizes[1];
+      const permission = pixelSizes[2];
+      const colorDepth = Math.round(8 * photo_input.files.item(0).size / parseInt(pixelSizes[0]) / parseInt(pixelSizes[1]));
+      const compression = file.replace(pixelSizesStr, '').split('.')[0];
+      const type=file.replace(pixelSizesStr, '').split('.')[1];
+
+document.getElementById("Size pixel").innerHTML=pixelSize;
+document.getElementById("Permission").innerHTML=permission;
+document.getElementById("Depth").innerHTML=colorDepth;
+document.getElementById("Compression").innerHTML=compression;
+document.getElementById("Type").innerHTML=type;
+    
+  }
+}
+
+
+function getExif() {
+    var img1 = document.getElementById("myfile");
+    EXIF.getData(img1, function() {
+        var make = EXIF.getTag(this, "Make");
+        var model = EXIF.getTag(this, "Model");
+       console.log(make);
+       alert("tjrebj");
+    });
+
+    
+}
+    </script>
+
+</body>
+
+</html>
